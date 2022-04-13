@@ -13,19 +13,19 @@ function App(): JSX.Element {
     setFile(event.target.files[0]);
   }
 
-  function handleSubmit(event: ButtonElement){
+  async function handleSubmit(event: ButtonElement){
     event.preventDefault();
     let formData = new FormData();
-    if (file ===undefined) return;
+    if (file === undefined) return;
     formData.append('file', file);
-    console.log("I'm here");
+
     fetch('http://localhost:3000/upload',{
       method: 'POST',
       body: formData
     }).then(
-      response => console.log(response.json())
+      response => response.json()
     ).then(
-      success => console.log(success)
+      success => console.log(success.data)
     ).catch(
       error => console.log(error)
     )
