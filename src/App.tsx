@@ -1,3 +1,4 @@
+import { findByLabelText } from '@testing-library/react';
 import React, { useState } from 'react';
 
 function App(): JSX.Element {
@@ -31,8 +32,17 @@ function App(): JSX.Element {
     )
   }
 
+  const ContainerStyle = {
+    backgroundColor: "#333333",
+    height: "100vh",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    color: "white"
+  }
+
   return (
-    <div style={{backgroundColor: "#333333", height: "100vh", color: "white"}}>
+    <div style={ContainerStyle}>
       <form>
         <input onChange={(event: ChangeEvent) => handleData(event)} type="file"/>
         <button onClick={(event: ButtonElement) => handleSubmit(event)}>Send Files</button>
