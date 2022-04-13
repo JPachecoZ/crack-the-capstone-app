@@ -1,24 +1,42 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from 'react';
 
-function App() {
+function App(): JSX.Element {
+
+  const [file, setFile] = useState<File>();
+
+  type ChangeEvent = React.ChangeEvent<HTMLInputElement>
+  type ButtonElement = React.FormEvent<HTMLButtonElement>
+
+  function handleData(event: ChangeEvent){
+    event.preventDefault();
+    if (event.target.files === null) return
+    setFile(event.target.files[0]);
+  }
+
+  function handleSubmit(event: ButtonElement){
+    event.preventDefault();
+    let formData = new FormData();
+    if (file ===undefined) return;
+    formData.append('file', file);
+    console.log("I'm here");
+    fetch('http://localhost:3000/upload',{
+      method: 'POST',
+      body: formData
+    }).then(
+      response => console.log(response.json())
+    ).then(
+      success => console.log(success)
+    ).catch(
+      error => console.log(error)
+    )
+  }
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div style={{backgroundColor: "#333333", height: "100vh", color: "white"}}>
+      <form>
+        <input onChange={(event: ChangeEvent) => handleData(event)} type="file"/>
+        <button onClick={(event: ButtonElement) => handleSubmit(event)}>Send Files</button>
+      </form>
     </div>
   );
 }
