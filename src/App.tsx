@@ -18,20 +18,30 @@ const Container = styled.div`
   gap: 50px;
   color: #fff;
 `
-
 const TitleContainer = styled.div`
   display: flex;
   flex-direction: column;
   gap: 10px;
   text-align: center;
 `
-
 const UploadForm = styled.form`
   display: flex;
   flex-direction: column;
   gap: 20px;
 `
-
+const HeadersContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  gap: 5px;
+`
+const HeadBox = styled.div`
+  padding: 3px 5px;
+  border-radius: 8px;
+  background-color: #fff;
+  color: #000;
+  font-size: 0.85rem;
+  font-weight: 600;
+`
 function UploadButton({onChange} :any) {
   return (
     <Button
@@ -51,6 +61,7 @@ function App(): JSX.Element {
 
   const [file, setFile] = useState<File>();
   const [headers, setHeaders] = useState<any>();
+  //const [isCorrect, setIsCorrect] = useState<boolean>(false);
 
   function handleData(event: ChangeEvent){
     event.preventDefault();
@@ -59,11 +70,10 @@ function App(): JSX.Element {
     setFile(event.target.files[0]);
     // Reading file
     readXlsxFile(myFile).then((rows) => {
-      //console.log(rows[0])
-      //console.log(Object.values(rows[0]))
       if (rows[0] === undefined) return
       setHeaders(rows[0]);
     })
+    console.log(headers);
     console.log(headers);
   }
 
@@ -73,24 +83,36 @@ function App(): JSX.Element {
     if (file === undefined) return;
     formData.append('file', file);
 
-    // fetch('http://localhost:3000/upload',{
-    //   method: 'POST',
-    //   body: formData
-    // }).then(
-    //   response => response.json()
-    // ).then(
-    //   success => console.log(success.data)
-    // ).catch(
-    //   error => console.log(error)
-    // )
+    fetch('http://localhost:3000/upload',{
+      method: 'POST',
+      body: formData
+    }).then(
+      response => response.json()
+    ).then(
+      success => console.log(success.data)
+    ).catch(
+      error => console.log(error)
+    )
   }
 
-  let headerTag = null;
-
+  // Se muestran los headers
+  let headerTag = <div>Por favor subir el excel</div>;
+    
   if (headers != null){
-    headerTag = <div>{headers.map((head :any) => <p>{head}</p>)}</div>
-  } else {
-    headerTag = <div>Por favor subir el excel</div> 
+    if (headers.length == 29){
+      headerTag = (
+        <div style={{display: 'flex', gap: '8px', flexDirection: 'column'}}>
+          <Typography variant="body1">
+            Se exportarán las siguientes columnas
+          </Typography>
+          <HeadersContainer>
+            {headers.map((head :any) => <HeadBox>{head}</HeadBox>)}
+          </HeadersContainer>
+        </div>
+      
+)    } else {
+      headerTag = <div>El número de columnas no es la correcta</div>
+    }
   }
 
   return (
