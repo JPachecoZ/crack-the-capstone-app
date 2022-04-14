@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Button, Typography } from '@mui/material'
 import UploadOutlinedIcon from '@mui/icons-material/UploadOutlined';
 import styled from "@emotion/styled"
+import readXlsxFile from 'read-excel-file'
 import '@fontsource/roboto/300.css';
 
 type ChangeEvent = React.ChangeEvent<HTMLInputElement>
@@ -49,12 +50,21 @@ function UploadButton({onChange} :any) {
 function App(): JSX.Element {
 
   const [file, setFile] = useState<File>();
+  const [headers, setHeaders] = useState<any>();
 
   function handleData(event: ChangeEvent){
     event.preventDefault();
     if (event.target.files === null) return
-    console.log("File acquired")
+    const myFile = event.target.files[0];
     setFile(event.target.files[0]);
+    // Reading file
+    readXlsxFile(myFile).then((rows) => {
+      //console.log(rows[0])
+      //console.log(Object.values(rows[0]))
+      if (rows[0] === undefined) return
+      setHeaders(rows[0]);
+    })
+    console.log(headers);
   }
 
   async function handleSubmit(event: ButtonElement){
@@ -63,16 +73,24 @@ function App(): JSX.Element {
     if (file === undefined) return;
     formData.append('file', file);
 
-    fetch('http://localhost:3000/upload',{
-      method: 'POST',
-      body: formData
-    }).then(
-      response => response.json()
-    ).then(
-      success => console.log(success.data)
-    ).catch(
-      error => console.log(error)
-    )
+    // fetch('http://localhost:3000/upload',{
+    //   method: 'POST',
+    //   body: formData
+    // }).then(
+    //   response => response.json()
+    // ).then(
+    //   success => console.log(success.data)
+    // ).catch(
+    //   error => console.log(error)
+    // )
+  }
+
+  let headerTag = null;
+
+  if (headers != null){
+    headerTag = <div>{headers.map((head :any) => <p>{head}</p>)}</div>
+  } else {
+    headerTag = <div>Por favor subir el excel</div> 
   }
 
   return (
@@ -81,6 +99,7 @@ function App(): JSX.Element {
         <Typography variant="h2" sx={{fontWeight: '600'}}>CRACK THE CODE</Typography>
         <Typography variant="h5">Massive Upload Platform</Typography>
       </TitleContainer>
+      {headerTag}
       <UploadForm>
         <UploadButton onChange={(event: ChangeEvent) => handleData(event)} />
         {/* <input onChange={(event: ChangeEvent) => handleData(event)} type="file"/> */}
