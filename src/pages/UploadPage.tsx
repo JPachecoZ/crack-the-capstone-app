@@ -66,7 +66,7 @@ function UploadPage(): JSX.Element {
       let formData = new FormData();
       formData.append('file', file);
   //
-      fetch('http://localhost:3000/upload',{
+      fetch('http://127.0.0.1:5500/upload',{
         method: 'POST',
         body: formData
       }).then(
