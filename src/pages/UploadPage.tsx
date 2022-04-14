@@ -4,6 +4,7 @@ import UploadOutlinedIcon from '@mui/icons-material/UploadOutlined';
 import styled from "@emotion/styled"
 import '@fontsource/roboto/300.css';
 import { servicesUpload } from '../services/servicesUpload';
+import { AnyTxtRecord } from 'dns';
 
 
 type ChangeEvent = React.ChangeEvent<HTMLInputElement>
@@ -48,34 +49,32 @@ function UploadButton({onChange} :any) {
     )
   }
 
-function UploadPage(): JSX.Element {
-    
-    const [file, setFile] = useState<File>();
+function UploadPage(file:File, onFile:any): JSX.Element {
 
     function handleData(event: ChangeEvent){
       event.preventDefault();
       if (event.target.files === null) return
       console.log("File acquired")
-      setFile(event.target.files[0]);
+      onFile(event.target.files[0]);
     }
   
     async function handleSubmit(event: ButtonElement){
       event.preventDefault();
       if (file === undefined) return;
-      //servicesUpload(file)
-      let formData = new FormData();
-      formData.append('file', file);
+      servicesUpload(file)
+      //let formData = new FormData();
+      //formData.append('file', file);
   //
-      fetch('http://127.0.0.1:5500/upload',{
-        method: 'POST',
-        body: formData
-      }).then(
-        response => response.json()
-      ).then(
-        success => console.log(success.data)
-      ).catch(
-        error => console.log(error)
-      )
+      //fetch('http://127.0.0.1:5500/upload',{
+      //  method: 'POST',
+      //  body: formData
+      //}).then(
+      //  response => response.json()
+      //).then(
+      //  success => console.log(success.data)
+      //).catch(
+      //  error => console.log(error)
+      //)
     }
 
     return (

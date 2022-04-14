@@ -1,6 +1,6 @@
 import {BASE_URL} from '../config'
 
-export const servicesUpload = ({file}:any) => {
+export const servicesUpload = (file: File) => {
   let formData = new FormData();
   formData.append('file', file);
   return fetch(`${BASE_URL}/upload`,{
