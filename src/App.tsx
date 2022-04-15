@@ -18,7 +18,7 @@ const Container = styled.div`
   gap: 50px;
   color: #fff;
 `
-const TitleContainer = styled.div`
+const CommonContainer = styled.div`
   display: flex;
   flex-direction: column;
   gap: 10px;
@@ -64,16 +64,17 @@ function App(): JSX.Element {
 
   const [file, setFile] = useState<File>();
   const [headers, setHeaders] = useState<any>();
-  const [dataErrors, setDataErrors] = useState<string[]>([]);
-  //const [isDisable, setIsDisable] = useState<boolean>(false);
-  //const [isCorrect, setIsCorrect] = useState<boolean>(false);
+  const [rowsCreated, setRowsCreated] = useState<number>(0);
+  const [rowsWithErrors, setRowsWithErrors] = useState<number>(0);
+  const [errors, setErrors] = useState<any>();
+  const [showData, setShowData] = useState<boolean>(false);
+  //const [dataFromResponse, setDataFromResponse] = useState<string[]>([]);
 
   function handleData(event: ChangeEvent){
     event.preventDefault();
     if (event.target.files === null) return
     const myFile = event.target.files[0];
     setFile(event.target.files[0]);
-    // Reading file
     readXlsxFile(myFile).then((rows) => {
       if (rows[1] === undefined) return
       setHeaders(rows[1]);
@@ -96,8 +97,11 @@ function App(): JSX.Element {
       response => response.json()
     ).then(
       success => {
-        setDataErrors(success.data) 
-        //console.log(success.data.data_to_inspect)
+        setShowData(true)
+        setRowsCreated(success.data.registers_created)
+        setRowsWithErrors(success.data.registers_with_errors)
+        setErrors(success.data.data_to_inspect)
+        console.log(errors);
       }
     ).catch(
       error => console.log(error)
@@ -117,28 +121,26 @@ function App(): JSX.Element {
           <HeadersContainer>
             {headers.map((head :any) => <HeadBox>{head}</HeadBox>)}
           </HeadersContainer>
-          <Typography variant="body1" textAlign="center">
-            Cantidad de errores:
-          </Typography>
-          
-        
         </div>
-      
-)    } else {
+      )} else {
       headerTag = <div>El número de columnas no es la correcta</div>
     }
   }
 
   return (
     <Container>
-      <TitleContainer>
+      <CommonContainer>
         <Typography variant="h2" sx={{fontWeight: '600'}}>CRACK THE CODE</Typography>
         <Typography variant="h5">Massive Upload Platform</Typography>
-      </TitleContainer>
+      </CommonContainer>
       {headerTag}
       <UploadForm>
         <UploadButton onChange={(event: ChangeEvent) => handleData(event)} />
-        {/* <input onChange={(event: ChangeEvent) => handleData(event)} type="file"/> */}
+        {showData ? <CommonContainer>
+                  <div>Filas registradas: {rowsCreated}</div>
+                  <div>Filas con errores: {rowsWithErrors}</div>
+                </CommonContainer>
+        : null}
         <Button
           onClick={(event: ButtonElement) => handleSubmit(event)}
           sx={{
