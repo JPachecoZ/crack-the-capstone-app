@@ -72,14 +72,51 @@ function App(): JSX.Element {
     event.preventDefault();
     if (event.target.files === null) return
     const myFile = event.target.files[0];
-    setFile(event.target.files[0]);
+    setFile(myFile);
     // Reading file
     readXlsxFile(myFile).then((rows) => {
       if (rows[1] === undefined) return
-      setHeaders(rows[1]);
+      assignData(rows);
     })
-    console.log(headers);
-    console.log(headers);
+  }
+
+  function assignData(rows: Array<string>){
+
+    let initial_data = {
+        first_name: null,
+        last_name: null,
+        email: null,
+        country: null,
+        doc_type: null,
+        doc_number: null,
+        student_first_name: null,
+        student_last_name: null,
+        birthdate: null,
+        course_name: null,
+        group_id: null
+    }
+
+    let usual_headers = {
+      'First Name': 'first_name',
+      'Last Name': 'last_name',
+      'Email': 'email',
+      'IP Country': 'country',
+      'Tipo de documento': 'doc_type',
+      'Número de documento': 'doc_number',
+      'Nombre estudiante': 'student_first_name',
+      'Apellidos estudiante': 'student_last_name',
+      'Fecha de nacimiento estudiante': 'birthdate',
+      'Curso': 'course_name',
+      'Group ID': 'group_id'}
+
+    for (let i=0; i <= rows[1].length-1; i++ ) {
+      if (usual_headers[rows[1][i]]) {
+        initial_data[usual_headers[rows[1][i]]] = i;
+      }
+    }
+    console.log(initial_data);
+
+    setHeaders(initial_data);
   }
 
   async function handleSubmit(event: ButtonElement){
@@ -88,8 +125,8 @@ function App(): JSX.Element {
     if (file === undefined) return;
     formData.append('file', file);
 
-    //fetch('http://localhost:3000/upload',{ //Este puerto es de ustedes, el mio es el de abajo
-    fetch('http://127.0.0.1:5500/upload',{
+    fetch('http://localhost:3000/upload',{ //Este puerto es de ustedes, el mio es el de abajo
+    // fetch('http://127.0.0.1:5500/upload',{
       method: 'POST',
       body: formData
     }).then(
@@ -97,7 +134,7 @@ function App(): JSX.Element {
     ).then(
       success => {
         setDataErrors(success.data) 
-        //console.log(success.data.data_to_inspect)
+        console.log(success.data.data_to_inspect)
       }
     ).catch(
       error => console.log(error)
@@ -120,11 +157,9 @@ function App(): JSX.Element {
           <Typography variant="body1" textAlign="center">
             Cantidad de errores:
           </Typography>
-          
-        
         </div>
-      
-)    } else {
+      )
+    } else {
       headerTag = <div>El número de columnas no es la correcta</div>
     }
   }
