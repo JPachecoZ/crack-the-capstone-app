@@ -33,6 +33,9 @@ const HeadersContainer = styled.div`
   display: flex;
   justify-content: center;
   gap: 5px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
 `
 const HeadBox = styled.div`
   padding: 3px 5px;
@@ -61,6 +64,8 @@ function App(): JSX.Element {
 
   const [file, setFile] = useState<File>();
   const [headers, setHeaders] = useState<any>();
+  const [dataErrors, setDataErrors] = useState<string[]>([]);
+  //const [isDisable, setIsDisable] = useState<boolean>(false);
   //const [isCorrect, setIsCorrect] = useState<boolean>(false);
 
   function handleData(event: ChangeEvent){
@@ -70,8 +75,8 @@ function App(): JSX.Element {
     setFile(event.target.files[0]);
     // Reading file
     readXlsxFile(myFile).then((rows) => {
-      if (rows[0] === undefined) return
-      setHeaders(rows[0]);
+      if (rows[1] === undefined) return
+      setHeaders(rows[1]);
     })
     console.log(headers);
     console.log(headers);
@@ -83,13 +88,17 @@ function App(): JSX.Element {
     if (file === undefined) return;
     formData.append('file', file);
 
-    fetch('http://localhost:3000/upload',{
+    //fetch('http://localhost:3000/upload',{ //Este puerto es de ustedes, el mio es el de abajo
+    fetch('http://127.0.0.1:5500/upload',{
       method: 'POST',
       body: formData
     }).then(
       response => response.json()
     ).then(
-      success => console.log(success.data)
+      success => {
+        setDataErrors(success.data) 
+        //console.log(success.data.data_to_inspect)
+      }
     ).catch(
       error => console.log(error)
     )
@@ -99,15 +108,20 @@ function App(): JSX.Element {
   let headerTag = <div>Por favor subir el excel</div>;
     
   if (headers != null){
-    if (headers.length == 29){
+    if (headers.length === 21){
       headerTag = (
         <div style={{display: 'flex', gap: '8px', flexDirection: 'column'}}>
-          <Typography variant="body1">
+          <Typography variant="body1" textAlign="center">
             Se exportarán las siguientes columnas
           </Typography>
           <HeadersContainer>
             {headers.map((head :any) => <HeadBox>{head}</HeadBox>)}
           </HeadersContainer>
+          <Typography variant="body1" textAlign="center">
+            Cantidad de errores:
+          </Typography>
+          
+        
         </div>
       
 )    } else {
