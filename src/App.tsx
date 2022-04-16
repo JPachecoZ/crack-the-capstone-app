@@ -90,7 +90,7 @@ function App(): JSX.Element {
     formData.append('file', file);
 
     //fetch('http://localhost:3000/upload',{ //Este puerto es de ustedes, el mio es el de abajo
-    fetch('http://127.0.0.1:5500/upload',{
+    fetch('https://crackcapstoneapiv1.herokuapp.com/upload',{
       method: 'POST',
       body: formData
     }).then(
@@ -112,7 +112,7 @@ function App(): JSX.Element {
   let headerTag = <div>Por favor subir el excel</div>;
     
   if (headers != null){
-    if (headers.length === 21){
+    if (headers.length === 18){
       headerTag = (
         <div style={{display: 'flex', gap: '8px', flexDirection: 'column'}}>
           <Typography variant="body1" textAlign="center">
@@ -123,7 +123,7 @@ function App(): JSX.Element {
           </HeadersContainer>
         </div>
       )} else {
-      headerTag = <div>El número de columnas no es la correcta</div>
+      headerTag = <div>El número de columnas no es la correcta {headers.length}/18</div>
     }
   }
 
