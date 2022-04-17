@@ -80,6 +80,19 @@ function App(): JSX.Element {
     })
   }
 
+  const usual_headers = {
+    'First Name': 'first_name',
+    'Last Name': 'last_name',
+    'Email': 'email',
+    'IP Country': 'country',
+    'Tipo de documento': 'doc_type',
+    'Número de documento': 'doc_number',
+    'Nombre estudiante': 'student_first_name',
+    'Apellidos estudiante': 'student_last_name',
+    'Fecha de nacimiento estudiante': 'birthdate',
+    'Curso': 'course_name',
+    'Group ID': 'group_id'}
+
   function assignData(rows: Array<string>){
 
     let initial_data = {
@@ -95,19 +108,6 @@ function App(): JSX.Element {
         course_name: null,
         group_id: null
     }
-
-    let usual_headers = {
-      'First Name': 'first_name',
-      'Last Name': 'last_name',
-      'Email': 'email',
-      'IP Country': 'country',
-      'Tipo de documento': 'doc_type',
-      'Número de documento': 'doc_number',
-      'Nombre estudiante': 'student_first_name',
-      'Apellidos estudiante': 'student_last_name',
-      'Fecha de nacimiento estudiante': 'birthdate',
-      'Curso': 'course_name',
-      'Group ID': 'group_id'}
 
     for (let i=0; i <= rows[1].length-1; i++ ) {
       if (usual_headers[rows[1][i]]) {
@@ -145,23 +145,34 @@ function App(): JSX.Element {
   let headerTag = <div>Por favor subir el excel</div>;
     
   if (headers != null){
-    if (headers.length === 21){
-      headerTag = (
+    headerTag = (
         <div style={{display: 'flex', gap: '8px', flexDirection: 'column'}}>
           <Typography variant="body1" textAlign="center">
-            Se exportarán las siguientes columnas
+            Se exportarán las siguientes columnas:
           </Typography>
           <HeadersContainer>
-            {headers.map((head :any) => <HeadBox>{head}</HeadBox>)}
+            {Object.keys(headers).map((head :any) => {
+
+              if (headers[head] !== null) {
+                let name = Object.keys(usual_headers).find(key => usual_headers[key] === head);
+                return <HeadBox>{name}</HeadBox>
+              }
+              })}
           </HeadersContainer>
           <Typography variant="body1" textAlign="center">
-            Cantidad de errores:
+            Columnas no encontradas:
           </Typography>
+          <HeadersContainer>
+            {Object.keys(headers).map((head :any) => {
+
+              if (headers[head] === null) {
+                let name = Object.keys(usual_headers).find(key => usual_headers[key] === head);
+                return <HeadBox>{name}</HeadBox>
+              }
+              })}
+          </HeadersContainer>
         </div>
-      )
-    } else {
-      headerTag = <div>El número de columnas no es la correcta</div>
-    }
+    )
   }
 
   return (
