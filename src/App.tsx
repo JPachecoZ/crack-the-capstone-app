@@ -31,15 +31,18 @@ const UploadForm = styled.form`
 `
 const HeadersContainer = styled.div`
   display: flex;
-  justify-content: center;
-  gap: 5px;
+  flex-direction: column;
+  justify-content: flex-start;
+  gap: 1px;
   display: flex;
   flex-wrap: wrap;
-  align-items: flex-start;
+  align-items: stretch;
+  text-align: center;
+  max-width: 230px;
 `
 const HeadBox = styled.div`
-  padding: 3px 5px;
-  border-radius: 8px;
+  padding: 5px 10px;
+  border-radius: 4px;
   background-color: #fff;
   color: #000;
   font-size: 0.85rem;
@@ -76,13 +79,13 @@ function App(): JSX.Element {
     const myFile = event.target.files[0];
     setFile(myFile);
   // Reading file
-    readXlsxFile(myFile).then((rows) => {
+    readXlsxFile(myFile).then((rows: any) => {
       if (rows[1] === undefined) return
       assignData(rows);
     })
   }
-
-  const usual_headers = {
+  
+  const usual_headers : any = {
     'First Name': 'first_name',
     'Last Name': 'last_name',
     'Email': 'email',
@@ -95,9 +98,9 @@ function App(): JSX.Element {
     'Curso': 'course_name',
     'Group ID': 'group_id'}
 
-  function assignData(rows: Array<string>){
+  function assignData(rows: any){
 
-    let initial_data = {
+    let initial_data: any = {
         first_name: null,
         last_name: null,
         email: null,
@@ -153,29 +156,32 @@ function App(): JSX.Element {
     
   if (headers != null){
     headerTag = (
-        <div style={{display: 'flex', gap: '8px', flexDirection: 'column'}}>
-          <Typography variant="body1" textAlign="center">
-            Se exportarán las siguientes columnas:
-          </Typography>
+        <div style={{display: 'flex', gap: '24px', flexDirection: 'row'}}>
           <HeadersContainer>
+          <Typography variant="body1" textAlign="center" marginBottom="8px">
+            Columnas a exportar:
+          </Typography>
             {Object.keys(headers).map((head :any) => {
 
               if (headers[head] !== null) {
                 let name = Object.keys(usual_headers).find(key => usual_headers[key] === head);
                 return <HeadBox>{name}</HeadBox>
               }
+              return ""
               })}
           </HeadersContainer>
-          <Typography variant="body1" textAlign="center">
+
+          <HeadersContainer>
+          <Typography variant="body1" textAlign="center" marginBottom="8px">
             Columnas no encontradas:
           </Typography>
-          <HeadersContainer>
             {Object.keys(headers).map((head :any) => {
 
               if (headers[head] === null) {
                 let name = Object.keys(usual_headers).find(key => usual_headers[key] === head);
                 return <HeadBox>{name}</HeadBox>
               }
+              return ""
               })}
           </HeadersContainer>
         </div>
