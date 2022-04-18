@@ -37,3 +37,4 @@ export const HeadBox = styled.div`
   font-size: 0.85rem;
   font-weight: 600;
 `
+

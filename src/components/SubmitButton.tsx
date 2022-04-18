@@ -1,6 +1,6 @@
 import { Button } from "@mui/material"
 
-export default function SubmitButton({onSubmit}: any){
+export default function SubmitButton({onSubmit, isDisabled}: any){
   type ButtonElement = React.FormEvent<HTMLButtonElement>
 
   return(
@@ -14,6 +14,7 @@ export default function SubmitButton({onSubmit}: any){
       fontFamily: 'Roboto',
       fontSize: '1.1rem'
     }}
+    disabled={isDisabled}
     >Next</Button>
   )
 }

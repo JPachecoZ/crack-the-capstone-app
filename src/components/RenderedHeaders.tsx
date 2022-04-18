@@ -34,7 +34,7 @@ export default function RenderedHeaders({headers}: any){
 
           if (headers[head] === null) {
             let name = Object.keys(usual_headers).find(key => usual_headers[key] === head);
-            return <HeadBox>{name}</HeadBox>
+            return <HeadBox key={name}>{name}</HeadBox>
           }
           return ""
           })}
